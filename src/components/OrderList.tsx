@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { History, Package, Timer, MapPin, RefreshCcw } from "lucide-react";
 import type { Order } from "../types";
+import { SuccessModal } from "./SuccessModal";
 import { OrderCard } from "./OrderCard";
 import {
   getCurrentOrder,
@@ -14,6 +15,7 @@ export const OrderList: React.FC = () => {
   const [pastOrders, setPastOrders] = useState<Order[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPastOrders, setShowPastOrders] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { agent } = useAuth();
 
   const refreshOrders = async () => {
@@ -60,11 +62,17 @@ export const OrderList: React.FC = () => {
       setPastOrders([{ ...currentOrder, status: "COMPLETED" }, ...pastOrders]);
       setCurrentOrder(null);
       fetchPastOrders();
+      setShowSuccessModal(true);
     }
   };
 
   return (
     <div className="min-h-[calc(100vh-56px)] bg-gray-50">
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        onViewHistory={() => setShowPastOrders(true)}
+      />
       <div className="max-w-lg mx-auto p-4 pb-safe-bottom">
         {!showPastOrders ? (
           <>
